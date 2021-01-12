@@ -72,6 +72,9 @@ class Model(nn.Module):
             ##nc是以数据文件(coco.yaml)中的nc为准，在这里将模型结构(例如yolov4-p5.yaml)中的nc设置为数据文件(coco.yaml)中的nc
             self.yaml['nc'] = nc  # override yaml value
         ##解析模型
+        ##b = a: 赋值引用，a 和 b 都指向同一个对象
+        ##b = a.copy(): 浅拷贝，a 和 b 是一个独立的对象，但他们的子对象还是指向统一对象（是引用）
+        ##b = copy.deepcopy(a): 深度拷贝，a 和 b 完全拷贝了父对象及其子对象，两者是完全独立的
         self.model, self.save = parse_model(deepcopy(self.yaml), ch=[ch])  # model, savelist, ch_out
         # print([x.shape for x in self.forward(torch.zeros(1, ch, 64, 64))])
 
