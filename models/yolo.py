@@ -54,6 +54,7 @@ class Detect(nn.Module):
         return torch.stack((xv, yv), 2).view((1, 1, ny, nx, 2)).float()
 
 
+##模型主类
 class Model(nn.Module):
     def __init__(self, cfg='yolov4-p5.yaml', ch=3, nc=None):  # model, input channels, number of classes
         super(Model, self).__init__()
@@ -68,7 +69,9 @@ class Model(nn.Module):
         # Define model
         if nc and nc != self.yaml['nc']:
             print('Overriding %s nc=%g with nc=%g' % (cfg, self.yaml['nc'], nc))
+            ##nc是以数据文件(coco.yaml)中的nc为准，在这里将模型结构(例如yolov4-p5.yaml)中的nc设置为数据文件(coco.yaml)中的nc
             self.yaml['nc'] = nc  # override yaml value
+        ##解析模型
         self.model, self.save = parse_model(deepcopy(self.yaml), ch=[ch])  # model, savelist, ch_out
         # print([x.shape for x in self.forward(torch.zeros(1, ch, 64, 64))])
 
@@ -89,12 +92,14 @@ class Model(nn.Module):
         print('')
 
     def forward(self, x, augment=False, profile=False):
+        ##augment表示是否进行图片增广
         if augment:
             img_size = x.shape[-2:]  # height, width
             s = [1, 0.83, 0.67]  # scales
             f = [None, 3, None]  # flips (2-ud, 3-lr)
             y = []  # outputs
             for si, fi in zip(s, f):
+                ##先翻转再进行尺度变换，fi为翻转因子、si为尺度因子
                 xi = scale_img(x.flip(fi) if fi else x, si)
                 yi = self.forward_once(xi)[0]  # forward
                 # cv2.imwrite('img%g.jpg' % s, 255 * xi[0].numpy().transpose((1, 2, 0))[:, :, ::-1])  # save
@@ -108,6 +113,7 @@ class Model(nn.Module):
         else:
             return self.forward_once(x, profile)  # single-scale inference, train
 
+    ##单尺度训练、推理
     def forward_once(self, x, profile=False):
         y, dt = [], []  # outputs
         for m in self.model:
