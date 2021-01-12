@@ -1,0 +1,13 @@
+*.h5
+*ckpt*
+models/
+*.pyc
+*.json
+.idea/
+*.bogon
+logs/
+log/
+*log*
+*.pb
+*.pth
+__pycache__/
