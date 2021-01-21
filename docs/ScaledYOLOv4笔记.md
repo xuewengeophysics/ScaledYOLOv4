@@ -1197,6 +1197,21 @@ class Model(nn.Module):
 
 
 
+### SPP(Spatial Pyramid Pooling, 空间金字塔池化)
+
++ **使得子区域分类任务之间可以共享特征**，大大降低了算法的计算复杂度和实用中物体检测所需的时间；
+
+
+
+## 摘抄
+
++ Blog: [YOLOv4 — the most accurate real-time neural network on MS COCO dataset](https://alexeyab84.medium.com/yolov4-the-most-accurate-real-time-neural-network-on-ms-coco-dataset-73adfd3602fe)
+  + Object detection networks require higher network resolution to detect multiple objects of different sizes and their exact location. This, in its turn, requires the higher receptive field to cover the increased network resolution, which means more layers with stride=2 and/or conv3x3, and larger weights (filters) size to remember more object details.
+
+
+
+
+
 问雪更新于20210113
 
 
