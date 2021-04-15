@@ -1203,6 +1203,53 @@ class Model(nn.Module):
 
 
 
+## 3. Debug
+
++ PlotError: "/utils/general.py"
+
+```
+matplotlib.use('Agg')
+```
+
+
+
++ TypeError: can't convert cuda:0 device type tensor to numpy. Use Tensor.cpu() to copy the tensor to host memory first.
+
+```shell
+  File "/utils/general.py", line 1104, in output_to_target
+    targets = []
+  File "/anaconda3/envs/scaled-yolov4/lib/python3.7/site-packages/torch/tensor.py", line 621, in __array__
+    return self.numpy()
+TypeError: can't convert cuda:0 device type tensor to numpy. Use Tensor.cpu() to copy the tensor to host memory first.
+```
+
+```python
+def output_to_target(output, width, height):
+    # Convert model output to target format [batch_id, class_id, x, y, w, h, conf]
+    if isinstance(output, torch.Tensor):
+        output = output.cpu().numpy()
+
+    targets = []
+    for i, o in enumerate(output):
+        if isinstance(o, torch.Tensor):
+            o = o.cpu().numpy()
+        if o is not None:
+            for pred in o:
+                box = pred[:4]
+                w = (box[2] - box[0]) / width
+                h = (box[3] - box[1]) / height
+                x = box[0] / width + w / 2
+                y = box[1] / height + h / 2
+                conf = pred[4]
+                cls = int(pred[5])
+
+                targets.append([i, cls, x, y, w, h, conf])
+
+    return np.array(targets)
+```
+
+
+
 ## 摘抄
 
 + Blog: [YOLOv4 — the most accurate real-time neural network on MS COCO dataset](https://alexeyab84.medium.com/yolov4-the-most-accurate-real-time-neural-network-on-ms-coco-dataset-73adfd3602fe)
@@ -1212,7 +1259,7 @@ class Model(nn.Module):
 
 
 
-问雪更新于20210113
+问雪更新于20210415
 
 
 
